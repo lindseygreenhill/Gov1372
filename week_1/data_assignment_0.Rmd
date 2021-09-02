@@ -1,0 +1,35 @@
+---
+title: "data_assignment_0"
+author: "Lindsey Greenhill"
+date: "9/2/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tidyverse)
+```
+
+## Question 1
+
+```{r echo=FALSE}
+ggl <- read_csv("ggl_2008_data.csv")
+```
+
+## Question 2
+
+```{r}
+ggl %>%
+  ggplot(aes(x = age)) +
+  geom_histogram() +
+  labs(x = "Age in 2006") +
+  theme_classic()
+
+# minimum of 20, max of 106, median of 50
+
+sum <- summary(ggl$age)
+
+```
+
+The distribution of age in the study seems reasonable, as the minimum is 20, maximum is 106, and median is 50. 
