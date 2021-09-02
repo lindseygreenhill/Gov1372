@@ -7,6 +7,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+source("http://pcwww.liv.ac.uk/~william/R/crosstab.r")
 library(readr)
 library(tidyverse)
 ```
@@ -33,3 +34,17 @@ sum <- summary(ggl$age)
 ```
 
 The distribution of age in the study seems reasonable, as the minimum is 20, maximum is 106, and median is 50. 
+
+## Question 3
+
+```{r}
+
+
+# treatment
+
+crosstab(ggl, row.vars = "treatment", col.vars = "voted", type  = "r",
+         percentages = FALSE)
+
+
+```
+
