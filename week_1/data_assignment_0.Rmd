@@ -45,6 +45,21 @@ The distribution of age in the study seems reasonable, as the minimum is 20, max
 crosstab(ggl, row.vars = "treatment", col.vars = "voted", type  = "r",
          percentages = FALSE)
 
+```
 
+## Question 4
+
+```{r}
+ggl %>%
+  filter(treatment == "Neighbors") %>%
+  group_by(sex) %>%
+  summarise(prop_voted = mean(voted)) %>%
+  ggplot(aes(x = sex, y = prop_voted)) +
+  geom_point() +
+  ylim(0,1) +
+  theme_classic() +
+  labs(title = "Proportion of People who Voted who Received Neighbor Treatment",
+        subtitle = "By sex")
+  
 ```
 
