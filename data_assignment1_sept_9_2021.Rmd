@@ -101,9 +101,16 @@ The most common answer to this problem is .8. This corresponds to the reliabilit
 ```{r}
 # true probability
 
+# p(b|w) = p(b)p(w|b)/p(w) where p(w|b) = .8, p(b) = .15 and p(w) = p(w|b)p(b) +
+# p(w|~b)p(~b) = .8*.15 + .2*.85 = .29 (total probability theorem)
+
+prob_bw <- (.15*.8)/.29
+
+
+
 # histogram
 
-bias_data %>%
+hist_4 <- bias_data %>%
   ggplot(aes(x = cab)) +
   geom_histogram(binwidth = .05) +
   theme_classic() +
@@ -112,7 +119,7 @@ bias_data %>%
        subtitle = "Most common guess = .8")
 ```
 
-
+The true probability is `r prob_bw`. I arrived at this number using Bayes' theorem. The most common guess in the class was .8, showing evidence for the base 
 
 # Part 2: Political Faces
 
