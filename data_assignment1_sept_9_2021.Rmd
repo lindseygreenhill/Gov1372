@@ -53,18 +53,21 @@ First, let's look at the rare disease problem. You'll recall from the Kahneman (
 
 **Did you all exhibit this bias? Since the outcomes for this problem are binary, we need to test to see if the proportions who chose Program A under each of the conditions are the same. Report the difference in proportions who chose Program A under the 'save' and 'die' conditions. Do we see the same pattern that Kahneman described?**
 
-```{r}
+```{r message=FALSE}
 
-bias_data %>%
+tb_1 <- bias_data %>%
   group_by(rare_disease_cond) %>%
-  count(rare_disease_prog)
+  count(rare_disease_prog) %>%
+  summarise(prop_A = n[rare_disease_prog == "Program A"] / sum(n))
+tb_1
 
-# die rare disease cond -- 15/43 chose program A
+diff <- tb_1$prop_A[tb_1$rare_disease_cond == "save"] - tb_1$prop_A[tb_1$rare_disease_cond == "die"]
 
-# save rare disease cond -- 18/42 chose program A
 ```
 
-
+The difference in proportions is `r diff`.  We do see the same pattern that
+Kahneman described, as people are risk averse when the question is phrased in a
+gain context and risk accepting in a loss context.
 
 **EXTENSION: Report the 95% confidence interval for the difference in proportions you just calculated. Hint: the `infer` package has a function that is useful here. What does the 95% confidence interval mean?**
 
@@ -94,6 +97,21 @@ Now we will take a look at the taxi cab problem. This problem, originally posed 
 The most common answer to this problem is .8. This corresponds to the reliability of the witness, without regard for the base rate at which Blue cabs can be found relative to Green cabs. In other words, respondents tend to disregard the base rate when estimating the probability the cab was Blue.
 
 **What is the true probability the cab was Blue? Visualize the distribution of the guesses in the class using a histogram. What was the most common guess in the class?**
+
+```{r}
+# true probability
+
+# histogram
+
+bias_data %>%
+  ggplot(aes(x = cab)) +
+  geom_histogram(binwidth = .05) +
+  theme_classic() +
+  geom_vline(xintercept = .8, color = "red") +
+  labs(title = "Distribution of Guesses for Cab Question",
+       subtitle = "Most common guess = .8")
+```
+
 
 
 # Part 2: Political Faces
