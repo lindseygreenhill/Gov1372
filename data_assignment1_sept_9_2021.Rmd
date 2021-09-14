@@ -115,7 +115,7 @@ The most common answer to this problem is .8. This corresponds to the reliabilit
 
 **What is the true probability the cab was Blue? Visualize the distribution of the guesses in the class using a histogram. What was the most common guess in the class?**
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 # true probability
 
 # p(b|w) = p(b)p(w|b)/p(w) where p(w|b) = .8, p(b) = .15 and p(w) = p(w|b)p(b) +
@@ -135,12 +135,21 @@ hist_4 <- bias_data %>%
   labs(title = "Distribution of Guesses for Cab Question",
        subtitle = "Most common guess = .8",
        x = "Probability Cab is Blue")
+hist_4
+
+count_correct <- bias_data %>%
+  count(cab) %>%
+  filter(cab == .41) %>%
+  pull(n)
+
+prop_correct <- count_correct / nrow(bias_data)
 
 ggsave("blog_1_hist.png")
 ```
 
-The true probability is `r prob_bw`. I arrived at this number using Bayes' theorem. The most common guess in the class was .8, suggesting that the base rate fallacy came into play. 
-`r hist_4`
+The true probability is `r prob_bw`. I arrived at this number using Bayes' theorem. However, only 6 out of 85 respondents (or `r prop_correct` proportion of respondents) arrived at this answer. The most common guess in the class was .8, suggesting that the base rate fallacy came into play. It is likely that respondents used the readily available information of witness reliability to answer the question instead of using Bayes' theorem. 
+
+
 
 # Part 2: Political Faces
 
@@ -166,13 +175,13 @@ Variable Name         | Variable Description
 
 As before, make sure you replace "file_name_here_2.csv" with the name of the file.
 
-```{r faces, message=FALSE}
+```{r faces, message=FALSE, eval= FALSE}
 face_data <- read_csv("file_name_here_2.csv")
 ```
 
 As an example of how you might write your own code to analyze these data, let's take a look at whether there was a difference in the perceived competence of Democratic and Republican candidates' faces. We can examine this question graphically using a density plot.
 
-```{r}
+```{r eval = FALSE}
 # make density plot of perceived competence by party
 ggplot(data = face_data, aes(x = face_rating, color = party)) + # note that by setting color = party, 
   geom_density()                                                # the face ratings of each party will be 
@@ -181,7 +190,7 @@ ggplot(data = face_data, aes(x = face_rating, color = party)) + # note that by s
 
 We can also consider this statistically using a t-test for whether or not the mean face ratings are significantly different across parties.
 
-```{r}
+```{r eval = FALSE}
 # conduct a t-test of difference-in-means
 difference_in_means(face_rating ~ party, data = face_data)
 ```
