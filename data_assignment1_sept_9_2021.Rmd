@@ -55,11 +55,15 @@ First, let's look at the rare disease problem. You'll recall from the Kahneman (
 
 ```{r message=FALSE}
 
+# creating table of proportions between die and save
+
 tb_1 <- bias_data %>%
   group_by(rare_disease_cond) %>%
   count(rare_disease_prog) %>%
   summarise(prop_A = n[rare_disease_prog == "Program A"] / sum(n))
 tb_1
+
+# finding the difference in proportions
 
 diff <- tb_1$prop_A[tb_1$rare_disease_cond == "save"] - tb_1$prop_A[tb_1$rare_disease_cond == "die"]
 
@@ -72,6 +76,19 @@ gain context and risk accepting in a loss context.
 **EXTENSION: Report the 95% confidence interval for the difference in proportions you just calculated. Hint: the `infer` package has a function that is useful here. What does the 95% confidence interval mean?**
 
 Note that extensions to questions are not the same as data science questions. Complete this question if you like, but it is not required for data science students like actual data science questions.
+
+```{r}
+library(infer)
+
+# confidence interval 
+
+# want to fidn prop who answered A or B given the condition
+
+prop_test(bias_data, rare_disease_prog ~ rare_disease_cond, order = c("die", "save"))
+
+# it is statistically significant
+
+```
 
 
 ## Question 2
@@ -98,7 +115,7 @@ The most common answer to this problem is .8. This corresponds to the reliabilit
 
 **What is the true probability the cab was Blue? Visualize the distribution of the guesses in the class using a histogram. What was the most common guess in the class?**
 
-```{r}
+```{r echo=FALSE}
 # true probability
 
 # p(b|w) = p(b)p(w|b)/p(w) where p(w|b) = .8, p(b) = .15 and p(w) = p(w|b)p(b) +
@@ -116,10 +133,14 @@ hist_4 <- bias_data %>%
   theme_classic() +
   geom_vline(xintercept = .8, color = "red") +
   labs(title = "Distribution of Guesses for Cab Question",
-       subtitle = "Most common guess = .8")
+       subtitle = "Most common guess = .8",
+       x = "Probability Cab is Blue")
+
+ggsave("blog_1_hist.png")
 ```
 
-The true probability is `r prob_bw`. I arrived at this number using Bayes' theorem. The most common guess in the class was .8, showing evidence for the base 
+The true probability is `r prob_bw`. I arrived at this number using Bayes' theorem. The most common guess in the class was .8, suggesting that the base rate fallacy came into play. 
+`r hist_4`
 
 # Part 2: Political Faces
 
