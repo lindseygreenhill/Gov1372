@@ -119,7 +119,7 @@ The following code makes a data frame called `player_data_long` that you can use
 
 If you want, try to figure out what each line of code does. Cleaning the data and rearranging it like this is an important part of data science, not just running regressions and taking means. This is why we are leaving some of it to you, via `group_by()` and `summarize()`.
 
-```{r}
+```{r message=FALSE}
 
 # number of wins
 
@@ -164,7 +164,7 @@ points_plot <-  tb_points %>%
 ggarrange(win_plot, points_plot,
           nrow = 2)
 
-ggsave("blog_2_arranged_bar.png")
+# ggsave("blog_2_arranged_bar.png")
 ```
 
 To rank the strategies based on the number of wins, think about making use of the `winner` variable in the `pda_data` data frame.
@@ -183,7 +183,7 @@ To rank the strategies based on the number of wins, think about making use of th
 
 **Create a plot, similar to the one above, that displays how each strategy fared against all the other strategies. Which strategies were most successful against which other ones? Comment on the patterns that you see.**
 
-```{r}
+```{r message=FALSE}
 
 # creating average points for and  against so I can use them in ggplot
 
@@ -200,7 +200,7 @@ avg_points_against <-
 
 # making plot using facet wrap
 
-player_data_long %>%
+facet_plot <- player_data_long %>%
   ggplot(aes(x = opponent, y = score)) +
   geom_col(fill = "azure3") +
   facet_wrap(~player, scales = "free") +
@@ -221,7 +221,9 @@ player_data_long %>%
                                             col = "Average Points Against")) +
   scale_color_manual(values = c("indianred", "navyblue"))
 
-ggsave("blog_2_bar_plot.png")
+facet_plot
+
+# ggsave("blog_2_bar_plot.png")
 
 
   
