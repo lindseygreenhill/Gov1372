@@ -1,0 +1,56 @@
+---
+title: "Data Science Section 09/23/21"
+author: "Dominic Valentino"
+date: "9/23/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this exercise, your task is to use the list of variables to take the `messy_data` data set and clean it so that it looks like the `clean_data` data set that we used in class. If you think you've got it, you can check to see if the two data frames are equivalent by using `clean_data == my_data` (assuming you call your data frame `my_data`), which will compare the data frames entry-wise.
+
+```{r}
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+library(janitor)
+
+messy_data <- read_csv("Sep23ClassData_messy.csv")
+
+clean_data <- read_csv("Sep23ClassData_clean.csv")
+
+new_data <- messy_data %>%
+  mutate(party = case_when(pid3 == "Republican" | grepl("Republican", pid_lean) ~ "Republican",
+                           pid3 == "Democrat" | grepl("Democrat", pid_lean) ~ "Democrat",
+                           pid3 == "Independent" |grepl("Independent", pid_lean) ~ "Independent",
+                           T ~ NA_character_)) %>%
+  pivot_longer(cols = contains("Republican") ,
+               names_to = "treatment",
+               names_pattern = "(.*)Republican",
+               values_to = "marryRepublican") %>%
+  pivot_longer(cols = contains("Democrat"),
+               names_to = "treatment1",
+               names_pattern = "(.*)Democrat",
+               values_to = "marryDemocrat")
+  
+
+```
+
+
+Variable Name         | Variable Description
+--------------------- | --------------------------------------
+\texttt{pid3}         | Political party preference
+\texttt{pid\_lean}       | If a respondent didn't identify with the Democrats or Republicans in \texttt{pid3}, this indicates to which party (or neither) they feel closer
+\texttt{strongGOP}    | Indicator variable for whether the respondent identifies as a Strong Republican
+\texttt{strongDEM}    | Indicator variable for whether the respondent identifies as a Strong Democrat
+\texttt{strongPARTISAN}| Indicator variable for whether the respondent identifies as a strong member of either major party
+\texttt{party}        | Party variable where those who lean toward either major party are counted as identifying with that party
+\texttt{treatment}    | Which treatment condition the respondent was randomly assigned to
+\texttt{marryDemocrat}| The respondent's answer to how happy they would be if their child married a Democrat
+\texttt{marryRepublican}| The respondent's answer to how happy they would be if their child married a Republican
+\texttt{inPartyHappy} | Indicator variable for whether the respondent would be happy if their child married a member of their own party
+\texttt{outPartyUnhappy}| Indicator variable for whether the respondent would be unhappy if their child married a member of the other major party
+\texttt{polarized}    | Indicator variable for whether the respondent was affectively polarized
