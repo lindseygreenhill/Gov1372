@@ -117,13 +117,13 @@ new_data <- s_data %>%
 # creating ggplot graph 
 interaction_graph <- new_data %>%
   ggplot(aes(x = polity, y = pred_val)) +
-  geom_point(color = "steelblue2") +
+  geom_line(color = "steelblue2") +
   facet_wrap(~suffrage) +
   theme_clean() +
   labs(title = "Regression Predictions of Suffrage vs. No Suffrage",
-       subtitle = "0 = No Suffrage, 1 = Suffrage",
+       subtitle = "0 = No Women's Suffrage, 1 = Women's Suffrage",
        x = "Polity Score",
-       y = "Predicted Value")
+       y = "Predicted Conflicts")
 
 interaction_graph
 
