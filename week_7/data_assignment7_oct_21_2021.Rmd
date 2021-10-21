@@ -191,7 +191,12 @@ Linear models are not well suited for bounded ordinal responses. Instead ordinal
 library(MASS)
 select <- dplyr::select
 
-# polr(data = , formula = , method = "probit")
+# need to convert to a factor for the model to work 
+
+polr(data = protest_df_bydate , formula = as_factor(group_favorability_the_police) ~ pid7 + after + black +
+               female + over_50*pid7, method = "probit")
+
+# the coefficients are in fact different but they all have the same direction. The interaction doesn't really matter. 
 ```
 
 
