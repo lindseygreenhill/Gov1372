@@ -169,7 +169,7 @@ summary(mod_1)
 ###Part b
 The above functional form probably does not accurately model the relationship of all the relevant covariates in the dataset. What functional form would you recommend using and why? What covariates would you add? Is there need for an interaction term? **Run a regression of your specificiation and interpret the results. Justify your choices in modeling.**
 
-```{r}
+```{r results = "asis"}
 # we would want to add race_ethnicity
 protest_df_bydate <- protest_df_bydate %>%
   mutate(black = if_else(race_ethnicity == 2, 1, 0),
@@ -180,6 +180,9 @@ protest_df_bydate <- protest_df_bydate %>%
 mod_2 <- lm(group_favorability_the_police ~ pid7 + after + black +
                female + over_50*pid7, data = protest_df_bydate)
 summary(mod_2)
+
+stargazer(mod_1, mod_2, 
+          type = "latex")
 ```
 
 
@@ -193,10 +196,40 @@ select <- dplyr::select
 
 # need to convert to a factor for the model to work 
 
-polr(data = protest_df_bydate , formula = as_factor(group_favorability_the_police) ~ pid7 + after + black +
+mod_3 <- polr(data = protest_df_bydate , formula = as_factor(group_favorability_the_police) ~ pid7 + after + black +
                female + over_50*pid7, method = "probit")
 
+summary(mod_3)
 # the coefficients are in fact different but they all have the same direction. The interaction doesn't really matter. 
 ```
 
+
+
+```{r include=FALSE}
+
+
+sec_df <- protest_df_bydate %>%
+  drop_na() %>%
+  group_by(day_running) %>%
+  summarise(avg_score = mean(group_favorability_the_police))
+
+library(ggthemes)
+
+sec_df %>%
+  ggplot(aes(y = avg_score, x = day_running)) +
+  geom_jitter() +
+  geom_vline(xintercept = 0, color = "steelblue2") +
+  geom_hline(yintercept = 1.888, color = "indianred") +
+  geom_abline(intercept = 2.136, slope = -.00218, color = "navy") +
+  theme_clean()
+
+data_after <- sec_df %>%
+  filter(day_running > 0)
+
+lm(avg_score ~ day_running, data = data_after)
+
+data_before <- sec_df %>%
+  filter(day_running < 0) %>%
+  summarise(avg = mean(avg_score))
+```
 
