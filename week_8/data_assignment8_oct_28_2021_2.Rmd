@@ -163,11 +163,14 @@ Pick one of the two average difference variables (\texttt{AffectDiff\_avg} or \t
 **Use multiple regression to test your hypotheses. Be sure to include your selected control variables and the treatment variable at a minimum, bu the exact form of the model is up to you. Report and interpret the regression coefficients in the context of your hypotheses.**
 
 ```{r results="asis"}
-mod_1 <- lm(ID_diff_avg ~ jpfriend + age + PrejControl + treated, data = ChinaJapan)
+ChinaJapan_1 <- ChinaJapan %>%
+  mutate(treated = if_else(treated == TRUE, 1, 0))
+
+mod_1 <- lm(ID_diff_avg ~ jpfriend + age + PrejControl + treated, data = ChinaJapan_1)
 
 stargazer(mod_1, type = "latex")
 
-# summary(mod_1)
+ summary(mod_1)
 ```
 
 
