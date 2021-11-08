@@ -16,6 +16,8 @@ library(tidyverse)
 library(estimatr)
 library(haven)
 library(janitor)
+library(dotwhisker)
+library(ggthemes)
 library(stargazer)
 select <- dplyr::select
 ```
@@ -157,7 +159,24 @@ Lastly we may be interested not just in individual symptom recall but also wheth
 Use the tools above to alter the data in whatever way you see fit. Some examples could be renaming remaining variables, creating new binary variables that identify if respondents are part of a certain racial or ethnic group (these would be necessary for including race in a regression for example), or any other transformation of the data. **Use the tools above or any others to modify the data to more useful for the following exercises in any way you see fit. Save this final version as the object you'll use for future questions.**
 
 ```{r}
-clean_data <- Study1_processing6
+
+
+clean_data <- Study1_processing6 %>%
+  mutate(treatment = as_factor(case_when(treat_rand1 == 1 ~ "low_anxiety_low_disgust",
+                               treat_rand1 == 2 ~ "high_anxiety_low_disgust",
+                               treat_rand1 == 3 ~ "low_anxiety_high_disgust",
+                               treat_rand1 == 4 ~ "high_anxiety_high_disgust",
+                               TRUE ~ NA_character_)),
+         ref = "low_anxiety_low_disgust")
+
+
+ # mutate(treat_low_anx_low_disg = if_else(treat_rand1 == 1, 1, 0),
+  #       treat_high_anx_low_disg = if_else(treat_rand1 == 2, 1, 0),
+   #      treat_low_anx_high_disg = if_else(treat_rand1 == 3, 1, 0),
+    #     treat_high_anx_high_disg = if_else(treat_rand1 == 4, 1, 0),
+     #    treat_high_disg = if_else(treat_rand1 %in% c(3, 4), 1, 0),
+      #   treat_high_anx = if_else(treat_rand1 %in% c(1,2), 1, 0))
+
 ```
 
 
@@ -203,22 +222,35 @@ alpha_val <- cronbach.alpha(data = clean_data_1)
 ###Part c
 Create a multivariate regression model for an outcome variable of your choosing. Carefully interpret the results. **Create a multivariate linear regression model for any outcome of your choosing with any covariates of your choice. Justify your choice of models and what the result may indicate. Carefully interpret the coefficients for the model.**
 
-```{r}
+```{r results="asis"}
+
 # dependent variable will be requesting additional info. Shoot need to create
 # differetn treatment variables
 
-clean_data <- clean_data %>%
-  mutate(treat_disgust = if_else(treat_rand1 %in% c(3,4),
-                                 1, 0),
-         treat_anxiety = if_else(treat_rand1 %in% c(2,4),
-         1, 0))
+mod_1 <- lm(additional_info ~ treatment + gender + voter_registration_status,
+            data = clean_data)
 
+stargazer(mod_1, type = "latex")
 
 ```
 
 
 ###Part d
 You can create coefficient plots using regression coefficients as well. Use the results of part c to create a plot of the coefficients in your regression model. **Create a plot of the regression coefficients with their 95\% confidence intervals. Be sure to include a line demarcating 0. Hint: the confint() function can take a regression object and return the upper and lower bounds of the confidence intervals.**
+
+```{r}
+plot_1 <- dwplot(mod_1, ci = .95) +
+  geom_vline(xintercept = 0) +
+  theme_clean() +
+  theme(legend.position = "none") +
+  labs(title = "Regression Coefficients",
+       subtitle = "High Anxiety and Low Disgust only statistically \n significant coeff")
+plot_1
+# ggsave( "week_9_coeff_plot.png")
+  
+  
+```
+
 
 
 # Emotional Arousal: Disgust
